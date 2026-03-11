@@ -1,57 +1,75 @@
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0a0a);
+scene.background = new THREE.Color(0x0b1d0b);
+scene.fog = new THREE.Fog(0x0b1d0b,10,80);
 
 const camera = new THREE.PerspectiveCamera(
 75,
-window.innerWidth / window.innerHeight,
+window.innerWidth/window.innerHeight,
 0.1,
 1000
 );
 
 const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth,window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-camera.position.z = 5;
+camera.position.set(0,2,6);
 
-const light = new THREE.PointLight(0xffffff,2,100);
-light.position.set(10,10,10);
-scene.add(light);
+const hemiLight = new THREE.HemisphereLight(0xffffff,0x444444,2);
+scene.add(hemiLight);
 
-const ambient = new THREE.AmbientLight(0xffffff,0.5);
-scene.add(ambient);
+const dirLight = new THREE.DirectionalLight(0xffffff,1);
+dirLight.position.set(10,20,10);
+scene.add(dirLight);
 
-const geometry = new THREE.BoxGeometry(2,2,2);
-const material = new THREE.MeshStandardMaterial({
-color:0x777777
-});
-
-const temple = new THREE.Mesh(geometry,material);
-scene.add(temple);
-
-const floorGeo = new THREE.PlaneGeometry(100,100);
-const floorMat = new THREE.MeshStandardMaterial({
-color:0x333333
-});
-
+const floorGeo = new THREE.PlaneGeometry(200,200);
+const floorMat = new THREE.MeshStandardMaterial({color:0x3b3b3b});
 const floor = new THREE.Mesh(floorGeo,floorMat);
 floor.rotation.x = -Math.PI/2;
-floor.position.y = -1;
 scene.add(floor);
 
-const keys = {};
+const loader = new THREE.GLTFLoader();
+
+loader.load(
+
+"assets/temple.glb",
+
+function(gltf){
+
+const temple = gltf.scene;
+temple.scale.set(3,3,3);
+temple.position.set(0,0,0);
+
+scene.add(temple);
+
+document.getElementById("loading").style.display="none";
+
+},
+
+undefined,
+
+function(error){
+
+console.log("Temple load error:",error);
+document.getElementById("loading").innerText="Temple model missing";
+
+}
+
+);
+
+const keys={};
 
 document.addEventListener("keydown",(e)=>{
-keys[e.key] = true;
+keys[e.key.toLowerCase()] = true;
 });
 
 document.addEventListener("keyup",(e)=>{
-keys[e.key] = false;
+keys[e.key.toLowerCase()] = false;
 });
 
 function move(){
 
-const speed = 0.1;
+let speed=0.15;
 
 if(keys["w"]) camera.position.z -= speed;
 if(keys["s"]) camera.position.z += speed;
@@ -66,12 +84,16 @@ requestAnimationFrame(animate);
 
 move();
 
-temple.rotation.y += 0.003;
-
 renderer.render(scene,camera);
 
 }
 
 animate();
 
-document.getElementById("loading").style.display = "none";
+window.addEventListener("resize",()=>{
+
+camera.aspect = window.innerWidth/window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth,window.innerHeight);
+
+});
