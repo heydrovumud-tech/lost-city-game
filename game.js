@@ -73,3 +73,5 @@ renderer.render(scene,camera);
 }
 
 animate();
+
+document.getElementById("loading").style.display = "none";
