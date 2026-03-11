@@ -92,7 +92,6 @@ artifacts.push(gem);
 }
 
 }
-
 spawnArtifacts();
 
 const keys = {};
@@ -143,7 +142,6 @@ alert("You discovered the Lost City treasure!");
 });
 
 }
-
 function animate(){
 
 requestAnimationFrame(animate);
