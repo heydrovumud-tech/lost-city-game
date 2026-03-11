@@ -5,20 +5,13 @@ background:black;
 font-family:Arial;
 }
 
-#loading{
-
+#ui{
 position:absolute;
-top:50%;
-left:50%;
-
-transform:translate(-50%,-50%);
-
+top:20px;
+left:20px;
 color:white;
-font-size:35px;
-
-background:rgba(0,0,0,0.7);
-padding:20px;
-
-border-radius:10px;
-
+font-size:22px;
+background:rgba(0,0,0,0.6);
+padding:10px;
+border-radius:8px;
 }
